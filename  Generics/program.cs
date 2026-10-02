@@ -27,44 +27,7 @@ namespace rowidayahia200333_OOP_Assignment_3.Generics
 
 
     
-        public class StudentStore
-        {
-            private readonly List<Student> _students = new List<Student>();
-
-            public void Add(Student student)
-            {
-                if (student != null)
-                {
-                    _students.Add(student);
-                }
-            }
-
-            public Student? GetById(int id)
-            {
-                foreach (var student in _students)
-                {
-                    if (student.Id == id)
-                        return student;
-                }
-                return null;
-            }
-
-            public IEnumerable<Student> GetAll()
-            {
-                return _students;
-            }
-
-            public bool Remove(int id)
-            {
-                var student = GetById(id);
-                if (student != null)
-                {
-                    return _students.Remove(student);
-                }
-                return false;
-            }
-        }
-
+       
 
    
     
@@ -84,43 +47,7 @@ namespace rowidayahia200333_OOP_Assignment_3.Generics
     
 
     
-        public class CourseStore
-        {
-            private readonly List<Course> _courses = new List<Course>();
-
-            public void Add(Course course)
-            {
-                if (course != null)
-                {
-                    _courses.Add(course);
-                }
-            }
-
-            public Course? GetById(int id)
-            {
-                foreach (var course in _courses)
-                {
-                    if (course.Id == id)
-                        return course;
-                }
-                return null;
-            }
-
-            public IEnumerable<Course> GetAll()
-            {
-                return _courses;
-            }
-
-            public bool Remove(int id)
-            {
-                var course = GetById(id);
-                if (course != null)
-                {
-                    return _courses.Remove(course);
-                }
-                return false;
-            }
-        }
+       
 
 
 
