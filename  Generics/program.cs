@@ -32,7 +32,7 @@ namespace rowidayahia200333_OOP_Assignment_3.Generics
    
     
         public class Course : IHasId
-    {
+        {
             public int Id { get; set; }
             public string Title { get; set; }
             public decimal Price { get; set; }
@@ -44,10 +44,10 @@ namespace rowidayahia200333_OOP_Assignment_3.Generics
                 Price = price;
             }
         }
-    
 
-    
-       
+
+
+
 
 
 
@@ -55,41 +55,43 @@ namespace rowidayahia200333_OOP_Assignment_3.Generics
     public class Store<T>
         where T : IHasId
     {
-        private readonly List<T> _items = new List<T>();
+       
+        private readonly Dictionary<int, T> _items = new Dictionary<int, T>();
 
         public void Add(T item)
         {
-            if (item != null)
+            if (item == null)
+                throw new ArgumentNullException(nameof(item), "Item cannot be null.");
+
+            if (_items.ContainsKey(item.Id))
             {
-                _items.Add(item);
+                throw new InvalidOperationException($"An item with Id '{item.Id}' already exists in the store.");
             }
+
+            _items.Add(item.Id, item);
         }
 
         public T GetById(int id)
         {
-            foreach (var item in _items)
+           
+            if (_items.TryGetValue(id, out var item))
             {
-                if (item.Id == id)
-                    return item;
+                return item;
             }
+
             return default;
         }
 
-        public IEnumerable<T> GetAll()
+        
+        public IReadOnlyCollection<T> GetAll()
         {
-            return _items;
+            return _items.Values;
         }
 
         public bool Remove(int id)
         {
-            var item = GetById(id);
-            if (item != null)
-            {
-                return _items.Remove(item);
-            }
-            return false;
+            return _items.Remove(id);
         }
-
     }
 
 
