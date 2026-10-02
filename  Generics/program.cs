@@ -1,165 +1,61 @@
+
 namespace rowidayahia200333_OOP_Assignment_3.Generics
 {
-
-
-    
-    
-        public interface IHasId
-        {
-            int Id { get; }
-        }
-    
-
-
-    public class Student : IHasId
+    internal class Program
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-
-        public Student(int id, string name)
-        {
-            Id = id;
-            Name = name;
-        }
-    }
-
-   
-
-
-    
-       
-
-   
-    
-        public class Course : IHasId
-        {
-            public int Id { get; set; }
-            public string Title { get; set; }
-            public decimal Price { get; set; }
-
-            public Course(int id, string title, decimal price)
-            {
-                Id = id;
-                Title = title;
-                Price = price;
-            }
-        }
-
-
-
-
-
-
-
-
-    public class Store<T>
-        where T : IHasId
-    {
-       
-        private readonly Dictionary<int, T> _items = new Dictionary<int, T>();
-
-        public void Add(T item)
-        {
-            if (item == null)
-                throw new ArgumentNullException(nameof(item), "Item cannot be null.");
-
-            if (_items.ContainsKey(item.Id))
-            {
-                throw new InvalidOperationException($"An item with Id '{item.Id}' already exists in the store.");
-            }
-
-            _items.Add(item.Id, item);
-        }
-
-        public T GetById(int id)
+        static void Main(string[] args)
         {
            
-            if (_items.TryGetValue(id, out var item))
+
+            var studentStore = new Store<Student>();
+            studentStore.Add(new Student(1, "Ahmed"));
+            studentStore.Add(new Student(2, "Mona"));
+            studentStore.Add(new Student(3, "Rowida"));
+            studentStore.Add(new Student(4, "Omar"));
+            studentStore.Add(new Student(5, "Sara"));
+
+            var courseStore = new Store<Course>();
+            courseStore.Add(new Course(101, "C# Basics", 1500));
+            courseStore.Add(new Course(102, "OOP & Generics", 2500));
+            courseStore.Add(new Course(103, "SQL Databases", 2000));
+
+      
+            var student = studentStore.GetById(3);
+            Console.WriteLine($"GetById(3) Student: {student?.Name}");
+
+            var course = courseStore.GetById(102);
+            Console.WriteLine($"GetById(102) Course: {course?.Title}");
+            Console.WriteLine();
+
+            try
             {
-                return item;
+                studentStore.Add(new Student(1, "Duplicate Student"));
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Caught Expected Exception: {ex.Message}");
+            }
+            Console.WriteLine();
 
-            return default;
-        }
+            
+            var page2 = studentStore.GetAll().Page(2, 2);
+            foreach (var st in page2)
+            {
+                Console.WriteLine($"Id: {st.Id}, Name: {st.Name}");
+            }
+            Console.WriteLine();
 
-        
-        public IReadOnlyCollection<T> GetAll()
-        {
-            return _items.Values;
-        }
+            var courseList = new List<Course>
+            {
+                new Course(1, "Math", 1000),
+                new Course(2, "Physics", 1200)
+            };
+            var foundCourse = courseList.FindById(2);
+            Console.WriteLine($"FindById(2) on plain List<Course>: {foundCourse?.Title}");
+            Console.WriteLine();
 
-        public bool Remove(int id)
-        {
-            return _items.Remove(id);
+            
+            // var stringStore = new Store<string>(); // must NOT compile: string does not implement IHasId
         }
     }
-
-    public static class EnumerableExtensions
-    {
-        
-        public static IEnumerable<T> Page<T>(this IEnumerable<T> source, int pageNumber, int pageSize)
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
-            if (pageNumber < 1)
-                throw new ArgumentOutOfRangeException(nameof(pageNumber), "Page number must be 1 or greater.");
-
-            if (pageSize < 1)
-                throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be 1 or greater.");
-
-            int skip = (pageNumber - 1) * pageSize;
-            int current = 0;
-            int taken = 0;
-
-            foreach (var item in source)
-            {
-                if (current >= skip)
-                {
-                    yield return item;
-                    taken++;
-                    if (taken == pageSize)
-                        yield break;
-                }
-                current++;
-            }
-        }
-
-
-        public static T FindById<T>(this IEnumerable<T> source, int id) where T : IHasId
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
-            foreach (var item in source)
-            {
-                if (item != null && item.Id == id)
-                {
-                    return item;
-                }
-            }
-
-            return default;
-        }
-
-        
-        public static IReadOnlyDictionary<int, T> ToIdDictionary<T>(this IEnumerable<T> source) where T : IHasId
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
-            var dictionary = new Dictionary<int, T>();
-
-            foreach (var item in source)
-            {
-                if (item != null)
-                {
-                    dictionary.Add(item.Id, item);
-                }
-            }
-
-            return dictionary;
-        }
-    }
-
 }

@@ -18,3 +18,13 @@ if (item.Id == id)
 
  'T' does not contain a definition for 'Id' and no accessible extension method 'Id' accepting a first argument of type 'T' could be found
           it is want for examble an interface that have an Id property and the class that implement this interface will have this property and the generic class will be constraint to this interface
+
+
+
+          ## Step 7 - Prove it in Main
+
+### Why does new Store<string>() not compile?
+Store<T> has a generic type constraint where T : IHasId. Since the System.String class does not implement the IHasId interface, the C# compiler rejects Store<string> at compile time to enforce type safety.
+
+### What is the common name for the kind of class built in Steps 4 and 5?
+The common design pattern name for this class is the Repository Pattern (specifically, a Generic Repository).
